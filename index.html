@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sýrová Sezóna - Odpočet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mcd-red: #DB0007;
+            --mcd-yellow: #FFBC0D;
+            --cheese-gold: #FFA500;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #2c1d11 0%, #121212 100%);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(30, 30, 30, 0.85);
+            padding: 40px 20px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 188, 13, 0.2);
+            border: 2px solid var(--mcd-yellow);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: var(--mcd-yellow);
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-bottom: 30px;
+        }
+
+        .burger-container {
+            position: relative;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+
+        .burger-img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6));
+            transition: transform 0.3s ease;
+        }
+
+        .burger-img:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        .headline {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 25px 0 15px 0;
+            line-height: 1.3;
+        }
+
+        .days-highlight {
+            color: var(--mcd-yellow);
+            background: var(--mcd-red);
+            padding: 4px 16px;
+            border-radius: 12px;
+            display: inline-block;
+            font-size: 2.2rem;
+            font-weight: 900;
+            box-shadow: 0 4px 10px rgba(219, 0, 7, 0.4);
+        }
+
+        /* Detailní časovač (Dny, Hodiny, Minuty, Sekundy) */
+        .countdown-grid {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .time-block {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 80px;
+            border-bottom: 4px solid var(--cheese-gold);
+        }
+
+        .time-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sýrová Sezóna Se Blíží!</h1>
+        <p class="subtitle">Připravte si chuťové pohárky na pořádnou dávku sýra.</p>
+
+        <div class="burger-container">
+            <!-- Použijeme nahraný obrázek Swiss Kingu -->
+            <img src="burger.jpg" alt="Swiss King Burger" class="burger-img">
+        </div>
+
+        <div class="headline">
+            Do sýrovky zbývá <span id="days-count" class="days-highlight">X dní</span> jak fík!
+        </div>
+
+        <!-- Kompletní odpočet -->
+        <div class="countdown-grid">
+            <div class="time-block">
+                <div class="time-value" id="days">0</div>
+                <div class="time-label">Dní</div>
+            </div>
+            <div class="time-block">
+                <div class="time-value" id="hours">0</div>
+                <div class="time-label">Hodina</div>
+            </div>
+            <div class="time-block">
+                <div class="time-value" id="minutes">0</div>
+                <div class="time-label">Minut</div>
+            </div>
+            <div class="time-block">
+                <div class="time-value" id="seconds">0</div>
+                <div class="time-label">Sekund</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Jeseníky díky sýrovka jak fíky pes
+    </footer>
+
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            let currentYear = now.getFullYear();
+            
+            // Cílové datum: 1. prosince daného roku v 00:00:00
+            let targetDate = new Date(`October 24, ${currentYear} 00:00:00`);
+
+            // Pokud již 1. prosinec letošního roku přešel, odpočítej ke příštímu roku
+            if (now > targetDate) {
+                targetDate = new Date(`October 24, ${currentYear + 1} 00:00:00`);
+            }
+
+            const diff = targetDate - now;
+
+            // Výpočet dnů, hodin, minut, sekund
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            // Skloňování slova "den / dny / dní"
+            let daysText = `${days} dní`;
+            if (days === 1) {
+                daysText = `${days} den`;
+            } else if (days >= 2 && days <= 4) {
+                daysText = `${days} dny`;
+            }
+
+            // Vložení hodnot do stránky
+            document.getElementById('days-count').innerText = daysText;
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+            document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+        }
+
+        // Spustit ihned a aktualizovat každou sekundu
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
